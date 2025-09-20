@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Mail, MapPin } from "lucide-react";
 import heroImage from "@/assets/hero-bg.jpg";
+import TypingAnimation from "./TypingAnimation";
+import ParticleBackground from "./ParticleBackground";
 
 const Hero = () => {
   return (
@@ -12,6 +14,9 @@ const Hero = () => {
       >
         <div className="absolute inset-0 gradient-hero opacity-90"></div>
       </div>
+      
+      {/* Particle Background */}
+      <ParticleBackground />
       
       {/* Animated Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
@@ -26,9 +31,18 @@ const Hero = () => {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             Daniel M. <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-primary-light">Mutahi</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-4 text-gray-200">
-            Software Developer & Tech Enthusiast
-          </p>
+          <div className="text-xl md:text-2xl mb-4 text-gray-200">
+            <TypingAnimation 
+              texts={[
+                "Software Developer & Tech Enthusiast",
+                "Full Stack Web Developer",
+                "AI & Machine Learning Explorer",
+                "Data Analysis Specialist"
+              ]}
+              speed={100}
+              delay={2000}
+            />
+          </div>
           <p className="text-lg mb-8 text-gray-300 max-w-2xl mx-auto">
             Passionate about creating functional and beautiful web experiences with clean, scalable code
           </p>
