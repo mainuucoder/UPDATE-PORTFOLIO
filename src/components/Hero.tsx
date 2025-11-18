@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Mail, MapPin } from "lucide-react";
-import heroImage from "@/assets/hero-image.jpg";
+import heroImage from "@/assets/hero.jpg";
 import TypingAnimation from "./TypingAnimation";
-import ParticleBackground from "./ParticleBack ground";
+import ParticleBackground from "./ParticleBackground";
 
 const Hero = () => {
   return (
