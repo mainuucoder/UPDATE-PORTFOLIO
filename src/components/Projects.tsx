@@ -15,18 +15,18 @@ const projects = [
     category: "Web Animation",
     date: "2024",
   },
-  {
-    title: "Analogue Clock",
-    description: "A beautifully crafted working analog clock built with pure web technologies. Features real-time updates, smooth second hand movement, and elegant design with customizable themes.",
-    image: analogClockImage,
-    technologies: ["HTML5", "CSS3", "JavaScript", "DOM Manipulation"],
-    githubUrl: "https://github.com/mainuucoder/ANALOGUE_CLOCK-PROJECT-2.git",
-    liveUrl: "#",
-    category: "Web Component",
-    date: "2024",
-  },
 ];
 
+{
+  title: "Smart Waste Management System",
+  description: "Smart waste management platform using IoT sensors to monitor bin levels in real-time, optimize collection routes, and reduce operational costs through data-driven insights and automated scheduling."
+  image: analogClockImage,
+  technologies: ["MongoDB", "Express.js", "React", "Node.js", "JavaScript", "DOM Manipulation"],
+  githubUrl: "https://github.com/mainuucoder/Smart-waste-management-system.git",
+  liveUrl: "https://smart-waste-management-system-six.vercel.app/",
+  category: "MERN stuck Component",
+  date: "2025",
+},
 const Projects = () => {
   return (
     <section id="projects" className="py-20 bg-background">
