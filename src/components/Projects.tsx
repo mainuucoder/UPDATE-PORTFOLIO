@@ -5,6 +5,7 @@ import solarSystemImage from "@/assets/solar-system-project.jpg";
 import analogClockImage from "@/assets/smart_waste.png";
 
 const projects = [
+  
   {
     title: "Solar System Project",
     description: "An animated model of the solar system showcasing orbital mechanics with smooth CSS animations and interactive JavaScript features. Features realistic planet movements, information panels, and educational content.",
@@ -15,7 +16,16 @@ const projects = [
     category: "Web Animation",
     date: "2024",
   },
-
+  {
+    title: "Solar System Project",
+    description: "An animated model of the solar system showcasing orbital mechanics with smooth CSS animations and interactive JavaScript features. Features realistic planet movements, information panels, and educational content.",
+    image: solarSystemImage,
+    technologies: ["HTML5", "CSS3", "JavaScript", "Animation"],
+    githubUrl: "https://github.com/mainuucoder/SOLAR-SYSTEM-PROJECT-1.git",
+    liveUrl: "#",
+    category: "Web Animation",
+    date: "2024",
+  },
 
 {
   title: "Smart Waste Management System",
