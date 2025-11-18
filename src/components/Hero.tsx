@@ -57,12 +57,20 @@ const Hero = () => {
               Get In Touch
             </Button>
             <Button 
+              asChild
               size="lg" 
               variant="outline" 
               className="border-white text-white hover:bg-white hover:text-primary"
             >
-              <Github className="w-5 h-5 mr-2" />
-              View Projects
+              <a
+                href="https://github.com/mainuucoder"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center"
+              >
+                <Github className="w-5 h-5 mr-2" />
+                View Projects
+              </a>
             </Button>
           </div>
 
