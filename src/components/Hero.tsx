@@ -2,16 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Mail, MapPin } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
 import TypingAnimation from "./TypingAnimation";
-import ParticleBackground from "./ParticleBackground";
+import ParticleBackground from "./ParticleBack ground";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      >
+     <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${heroImage})` }}>
+
         <div className="absolute inset-0 gradient-hero opacity-90"></div>
       </div>
       
