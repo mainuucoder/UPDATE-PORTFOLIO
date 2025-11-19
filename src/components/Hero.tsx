@@ -8,7 +8,8 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
-     <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${heroImage})` }}>
+     <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${heroImage})` 
+    }>
 
         <div className="absolute inset-0 gradient-hero opacity-90"></div>
       </div>
@@ -61,7 +62,7 @@ const Hero = () => {
               className="border-white text-white hover:bg-white hover:text-primary"
             >
               <a
-                href="https://github.com/mainuucoder"
+                href="https://smart-waste-management-system-six.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center"
