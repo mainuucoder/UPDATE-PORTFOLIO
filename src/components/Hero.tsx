@@ -67,7 +67,7 @@ const Hero = () => {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center"
               >
-                {/* <Github className="w-5 h-5 mr-2" /> */}
+                <Github className="w-5 h-5 mr-2" />
                 View Projects
               </a>
             </Button>

@@ -26,7 +26,7 @@ const projects = [
     category: "Web Animation",
     date: "2024",
   },
-
+  
 {
   title: "Smart Waste Management System",
   description: "Smart waste management platform using IoT sensors to monitor bin levels in real-time, optimize collection routes, and reduce operational costs through data-driven insights and automated scheduling.",
