@@ -2,35 +2,25 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Github, ExternalLink, Calendar, Globe } from "lucide-react";
 import solarSystemImage from "@/assets/solar-system-project.jpg";
-import analogClockImage from "@/assets/smart_waste.png";
+import smart_waste   from "@/assets/smart_waste.png";
 
 const projects = [
   
   {
-    title: "Solar System Project",
-    description: "An animated model of the solar system showcasing orbital mechanics with smooth CSS animations and interactive JavaScript features. Features realistic planet movements, information panels, and educational content.",
+    title: "AI-Powered Soil Health Analysis",
+    description: "Revolutionizing soil management with satellite imagery, IoT sensors, and machine learning for sustainable agriculture",
     image: solarSystemImage,
     technologies: ["HTML5", "CSS3", "JavaScript", "Animation"],
     githubUrl: "https://github.com/mainuucoder/SOLAR-SYSTEM-PROJECT-1.git",
     liveUrl: "#",
     category: "Web Animation",
-    date: "2024",
+    date: "2025",
   },
-  {
-    title: "Solar System Project",
-    description: "An animated model of the solar system showcasing orbital mechanics with smooth CSS animations and interactive JavaScript features. Features realistic planet movements, information panels, and educational content.",
-    image: solarSystemImage,
-    technologies: ["HTML5", "CSS3", "JavaScript", "Animation"],
-    githubUrl: "https://github.com/mainuucoder/SOLAR-SYSTEM-PROJECT-1.git",
-    liveUrl: "#",
-    category: "Web Animation",
-    date: "2024",
-  },
-
+  
 {
   title: "Smart Waste Management System",
-  description: "Smart waste management platform using IoT sensors to monitor bin levels in real-time, optimize collection routes, and reduce operational costs through data-driven insights and automated scheduling.",
-  image: analogClockImage,
+  description: " Join us in building sustainable cities and communities.Report waste issues, track collection schedules, and contribute to a cleaner environment.   ",
+  image: smart_waste,
   technologies: ["MongoDB", "Express.js", "React", "Node.js", "JavaScript", "DOM Manipulation"],
   githubUrl: "https://github.com/mainuucoder/Smart-waste-management-system.git",
   liveUrl: "https://smart-waste-management-system-six.vercel.app/",
