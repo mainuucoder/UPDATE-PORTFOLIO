@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Github, ExternalLink, Filter } from "lucide-react";
-import solarSystemImage from "@/assets/solar-system-project.jpg";
-import analogClockImage from "@/assets/analog-clock-project.jpg";
+import profileImage from "@/assets/profileImage.jpg";
+import smart_waste from "@/assets/smart_waste.png";
 
 interface Project {
   id: number;
@@ -22,7 +22,7 @@ const allProjects: Project[] = [
     id: 1,
     title: "Solar System Project",
     description: "An animated model of the solar system showcasing orbital mechanics with smooth CSS animations and interactive JavaScript features. Features realistic planet movements, information panels, and educational content.",
-    image: solarSystemImage,
+    image: profileImage,
     technologies: ["HTML5", "CSS3", "JavaScript", "Animation"],
     githubUrl: "https://github.com/mainuucoder/SOLAR-SYSTEM-PROJECT-1.git",
     liveUrl: "#",
@@ -33,7 +33,7 @@ const allProjects: Project[] = [
     id: 2,
     title: "Analogue Clock",
     description: "A beautifully crafted working analog clock built with pure web technologies. Features real-time updates, smooth second hand movement, and elegant design with customizable themes.",
-    image: analogClockImage,
+    image: smart_waste,
     technologies: ["HTML5", "CSS3", "JavaScript", "DOM Manipulation"],
     githubUrl: "https://github.com/mainuucoder/ANALOGUE_CLOCK-PROJECT-2.git",
     liveUrl: "#",

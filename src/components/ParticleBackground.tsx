@@ -28,7 +28,7 @@ const ParticleBackground = () => {
 
     const createParticles = () => {
       const particles: Particle[] = [];
-      const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+      const particleCount = Math.floor((canvas.width * canvas.height) / 150000);
 
       for (let i = 0; i < particleCount; i++) {
         particles.push({
