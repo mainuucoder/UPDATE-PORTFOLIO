@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils";
 // Import your existing images
 import profileImage from "@/assets/profileImage.jpg";
 import smart_waste from "@/assets/smart_waste.png";
+import AIPoweredSoil from "@/assets/AIPoweredSoil.png";
+import AIforSDG3rd from "@/assets/AIforSDG3rd.png";
+import Safeguard  from "@/assets/Safeguard.png";
+import NexusSolutions from "@/assets/NexusSolutions.png";
 
 interface Project {
   id: number;
@@ -27,7 +31,7 @@ const allProjects: Project[] = [
     id: 1,
     title: "AI-Powered Soil Health Analysis",
     description: "Revolutionizing soil management with satellite imagery, IoT sensors, and machine learning for sustainable agriculture",
-    image: profileImage,
+    image: AIPoweredSoil,
     technologies: ["Python", "Machine Learning", "TensorFlow", "IoT", "Satellite Imagery"],
     githubUrl: "https://github.com/mainuucoder/LAND_DEGRADATION_PROJECT.git",
     liveUrl: "https://land-degradation-project.vercel.app/",
@@ -46,26 +50,27 @@ const allProjects: Project[] = [
     liveUrl: "https://smart-waste-management-system-six.vercel.app",
     category: "Full Stack",
     date: "2025",
-    featured: true,
+    featured: false,
     icon: <Sparkles className="w-4 h-4" />
   },
   {
     id: 3,
-    title: "E-Commerce Analytics Dashboard",
-    description: "Real-time business intelligence dashboard for e-commerce platforms with predictive analytics and sales forecasting",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
+    title: "Safeguard Africa.End GBV",
+    description: "A comprehensive ecosystem powered by AI to prevent, detect, and respond to digital violence targeting women and girls across Africa.",
+    image: Safeguard,
     technologies: ["React", "D3.js", "Python", "FastAPI", "PostgreSQL"],
     githubUrl: "https://github.com/mainuucoder/GBV-HACKTHON.git",
     liveUrl: "https://gbv-hackthon.vercel.app/",
-    category: "Data Visualization",
-    date: "2024",
-    icon: <Database className="w-4 h-4" />
+    category: "Full Stack & AI",
+    date: "2025",
+    icon: <Sparkles className="w-4 h-4" />,
+    featured: true
   },
   {
     id: 4,
     title: "AI for SDG 3: Predicting Disease Outbreak Risk",
     description: "Using Unsupervised Learning (K-Means & DBSCAN) to identify high-risk disease outbreak regions. Using Machine Learning and Real-Time Data",
-    image: "#",
+    image: AIforSDG3rd,
     technologies: ["Python", "OpenAI API", "React", "Firebase", "WebRTC"],
     githubUrl: "https://github.com/mainuucoder/machine-learning-model-.git",
     liveUrl: "https://machine-driven-model.streamlit.app/",
@@ -75,25 +80,25 @@ const allProjects: Project[] = [
   },
   {
     id: 5,
-    title: "Personal Finance Dashboard",
-    description: "Comprehensive personal finance management tool with budgeting, investment tracking, and analytics",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80",
+    title: "Nexus-Solutions",
+    description: "Transform Your Business with Innovative Solutions,helping businesses grow with cutting-edge technology, strategic planning, and creative solutions tailored to your specific needs",
+    image: NexusSolutions,
     technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Chart.js"],
-    githubUrl: "https://github.com/mainuucoder/personal-finance-dashboard",
-    liveUrl: "https://finance-dashboard-demo.vercel.app",
+    githubUrl: "https://github.com/mainuucoder/plp-webtechnologies-classroom-july2025-july-2025-final-project-and-deployment-Final-Project-and-Depl.git",
+    liveUrl: "https://nexus-nine-alpha.vercel.app/",
     category: "Full Stack",
     date: "2024"
   },
   {
     id: 6,
     title: "Climate Change Data Visualization",
-    description: "Interactive visualization of climate change data with predictive models and historical analysis",
+    description: "Transform Your Business with Innovative Solutions",
     image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80",
     technologies: ["D3.js", "Python", "Flask", "Pandas", "Mapbox"],
     githubUrl: "https://github.com/mainuucoder/climate-visualization",
     liveUrl: "https://climate-change-visualization.vercel.app",
-    category: "Data Visualization",
-    date: "2024"
+    category: "Full Stack & AI",
+    date: "2025"
   }
 ];
 
@@ -324,7 +329,7 @@ const ProjectFilter = () => {
               <div className="text-sm text-muted-foreground">Featured</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-500">
+              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-500">
                 2024-2025
               </div>
               <div className="text-sm text-muted-foreground">Timeline</div>

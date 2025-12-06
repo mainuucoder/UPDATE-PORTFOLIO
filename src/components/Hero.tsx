@@ -117,7 +117,7 @@ const Hero = () => {
               className="border-2 border-white text-white hover:bg-white hover:text-gray-800 backdrop-blur-lg px-14 py-8 text-xl min-w-[280px] font-sans font-semibold tracking-wide"
             >
               <a
-                href="https://smart-waste-management-system-six.vercel.app/"
+                href="https://github.com/mainuucoder"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center"

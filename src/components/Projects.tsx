@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Github, ExternalLink, Calendar, Globe } from "lucide-react";
 import solarSystemImage from "@/assets/solar-system-project.jpg";
 import smart_waste   from "@/assets/smart_waste.png";
+import AIforSDG3rd from "@/assets/AIforSDG3rd.png";
+import Safeguard_Africa  from "@/assets/Safeguard_Africa.png";
 
 const projects = [
   
@@ -28,6 +30,18 @@ const projects = [
   date: "2025",
 
 },
+{
+  
+    title: "Safeguard Africa / / End Digital Violence Against Women & Girls",
+    description: "A comprehensive ecosystem powered by AI to prevent, detect, and respond to digital violence targeting women and girls across Africa.",
+    image: "Safeguard_Africa",
+    technologies: ["React", "D3.js", "Python", "FastAPI", "PostgreSQL"],
+    githubUrl: "https://github.com/mainuucoder/GBV-HACKTHON.git",
+    liveUrl: "https://gbv-hackthon.vercel.app/",
+    category: "Full Stack & AI",
+    date: "2025",
+    
+  },
 ]
 const Projects = () => {
   return (
