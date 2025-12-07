@@ -45,6 +45,25 @@ const socialLinks = [
 ];
 
 const Contact = () => {
+  // CV file path - adjust this to match your actual file name and location
+  const cvFilePath = "/daniel-mutahi-cv.pdf";
+  
+  // Handle CV download
+  const handleDownloadCV = () => {
+    // Create a temporary anchor element
+    const link = document.createElement('a');
+    link.href = cvFilePath;
+    
+    // Extract filename from path or set custom name
+    const fileName = cvFilePath.split('/').pop() || 'daniel-mutahi-cv.pdf';
+    link.download = fileName;
+    
+    // Append to body, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <section id="contact" className="py-20 bg-muted/30">
       <div className="container mx-auto px-6">
@@ -71,6 +90,8 @@ const Contact = () => {
                       <a
                         href={info.href}
                         className="flex items-center space-x-4 group"
+                        target={info.href.startsWith('http') ? "_blank" : "_self"}
+                        rel={info.href.startsWith('http') ? "noopener noreferrer" : undefined}
                       >
                         <div className={`p-3 rounded-full ${info.bgColor} group-hover:scale-110 transition-transform duration-300`}>
                           <info.icon className={`w-6 h-6 ${info.color}`} />
@@ -122,8 +143,9 @@ const Contact = () => {
                     </p>
                   </div>
                   <Button
+                    onClick={handleDownloadCV}
                     className="bg-primary hover:bg-primary-dark text-primary-foreground"
-                    title="CV download temporarily unavailable"
+                    title="Download CV"
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download CV

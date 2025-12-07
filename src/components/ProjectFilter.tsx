@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Github, ExternalLink, Filter, Sparkles, Brain, Database } from "lucide-react";
@@ -97,7 +97,7 @@ const allProjects: Project[] = [
     technologies: ["D3.js", "Python", "Flask", "Pandas", "Mapbox"],
     githubUrl: "https://github.com/mainuucoder/climate-visualization",
     liveUrl: "https://climate-change-visualization.vercel.app",
-    category: "Full Stack & AI",
+    category: "Full Stack",
     date: "2025"
   }
 ];
@@ -108,6 +108,47 @@ const ProjectFilter = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [filteredProjects, setFilteredProjects] = useState(allProjects);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [flashActive, setFlashActive] = useState(false);
+  const [flashType, setFlashType] = useState<"horizontal" | "vertical" | "diagonal" | "circle">("horizontal");
+  const [flashColor, setFlashColor] = useState<"primary" | "accent" | "cyan" | "purple" | "rainbow">("primary");
+  
+  const flashIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Initialize flash effect
+  useEffect(() => {
+    // Start the flash interval
+    flashIntervalRef.current = setInterval(() => {
+      triggerFlash();
+    }, 3000); // Flash every 3 seconds
+
+    // Cleanup interval on unmount
+    return () => {
+      if (flashIntervalRef.current) {
+        clearInterval(flashIntervalRef.current);
+      }
+    };
+  }, []);
+
+  const triggerFlash = () => {
+    // Randomize flash properties
+    const types: Array<"horizontal" | "vertical" | "diagonal" | "circle"> = [
+      "horizontal", "vertical", "diagonal", "circle"
+    ];
+    const colors: Array<"primary" | "accent" | "cyan" | "purple" | "rainbow"> = [
+      "primary", "accent", "cyan", "purple", "rainbow"
+    ];
+    
+    setFlashType(types[Math.floor(Math.random() * types.length)]);
+    setFlashColor(colors[Math.floor(Math.random() * colors.length)]);
+    
+    // Activate flash
+    setFlashActive(true);
+    
+    // Deactivate flash after animation completes
+    setTimeout(() => {
+      setFlashActive(false);
+    }, 2000); // Increased duration for slower movement
+  };
 
   const handleCategoryChange = (category: string) => {
     if (category === selectedCategory) return;
@@ -125,15 +166,200 @@ const ProjectFilter = () => {
     }, 300);
   };
 
+  // Function to get gradient based on color
+  const getFlashGradient = (color: string, type: string) => {
+    const isVertical = type === "vertical";
+    
+    switch(color) {
+      case "primary":
+        return `linear-gradient(${isVertical ? 0 : 90}deg, 
+          transparent, 
+          #3b82f6 15%, 
+          #8b5cf6 50%, 
+          #3b82f6 85%, 
+          transparent)`;
+      case "accent":
+        return `linear-gradient(${isVertical ? 0 : 90}deg, 
+          transparent, 
+          #ec4899 15%, 
+          #f97316 50%, 
+          #ec4899 85%, 
+          transparent)`;
+      case "cyan":
+        return `linear-gradient(${isVertical ? 0 : 90}deg, 
+          transparent, 
+          #06b6d4 15%, 
+          #22d3ee 50%, 
+          #06b6d4 85%, 
+          transparent)`;
+      case "purple":
+        return `linear-gradient(${isVertical ? 0 : 90}deg, 
+          transparent, 
+          #a855f7 15%, 
+          #d946ef 50%, 
+          #a855f7 85%, 
+          transparent)`;
+      case "rainbow":
+        return `linear-gradient(${isVertical ? 0 : 90}deg, 
+          transparent, 
+          #ff0000 10%, 
+          #ff9900 25%, 
+          #ffff00 40%, 
+          #00ff00 55%, 
+          #0099ff 70%, 
+          #6600ff 85%, 
+          transparent)`;
+      default:
+        return `linear-gradient(${isVertical ? 0 : 90}deg, 
+          transparent, 
+          #3b82f6 15%, 
+          #8b5cf6 50%, 
+          #3b82f6 85%, 
+          transparent)`;
+    }
+  };
+
   return (
-    <section id="projects" className="py-20 bg-background overflow-hidden relative"> {/* ADDED id="projects" HERE */}
+    <section id="projects" className="py-20 bg-background overflow-hidden relative">
+      {/* THICK FLASH LIGHT EFFECT */}
+      <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+        {/* Horizontal Flash - THICKENED */}
+        <div 
+          className={cn(
+            "absolute top-0 left-0 w-full",
+            "transition-all duration-1000 ease-in-out",
+            flashActive && flashType === "horizontal" ? "opacity-70" : "opacity-0"
+          )}
+          style={{
+            background: getFlashGradient(flashColor, "horizontal"),
+            height: '12px', // Thickened from 1px to 12px
+            boxShadow: `
+              0 0 40px 20px ${flashColor === 'primary' ? '#3b82f6' : 
+               flashColor === 'accent' ? '#ec4899' :
+               flashColor === 'cyan' ? '#06b6d4' : 
+               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80,
+              0 0 80px 40px ${flashColor === 'primary' ? '#3b82f6' : 
+               flashColor === 'accent' ? '#ec4899' :
+               flashColor === 'cyan' ? '#06b6d4' : 
+               flashColor === 'purple' ? '#a855f7' : '#ff0000'}40
+            `,
+            animation: flashActive && flashType === "horizontal" ? 
+              "slowHorizontal 2s ease-in-out forwards" : "none",
+            filter: 'blur(1px)'
+          }}
+        />
+        
+        {/* Vertical Flash - THICKENED */}
+        <div 
+          className={cn(
+            "absolute top-0 left-0 h-full",
+            "transition-all duration-1000 ease-in-out",
+            flashActive && flashType === "vertical" ? "opacity-70" : "opacity-0"
+          )}
+          style={{
+            background: getFlashGradient(flashColor, "vertical"),
+            width: '12px', // Thickened from 1px to 12px
+            boxShadow: `
+              0 0 40px 20px ${flashColor === 'primary' ? '#3b82f6' : 
+               flashColor === 'accent' ? '#ec4899' :
+               flashColor === 'cyan' ? '#06b6d4' : 
+               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80,
+              0 0 80px 40px ${flashColor === 'primary' ? '#3b82f6' : 
+               flashColor === 'accent' ? '#ec4899' :
+               flashColor === 'cyan' ? '#06b6d4' : 
+               flashColor === 'purple' ? '#a855f7' : '#ff0000'}40
+            `,
+            animation: flashActive && flashType === "vertical" ? 
+              "slowVertical 2s ease-in-out forwards" : "none",
+            filter: 'blur(1px)'
+          }}
+        />
+        
+        {/* Diagonal Flash - THICKENED */}
+        <div 
+          className={cn(
+            "absolute top-0 left-0",
+            "transition-all duration-1000 ease-in-out",
+            flashActive && flashType === "diagonal" ? "opacity-70" : "opacity-0"
+          )}
+          style={{
+            background: getFlashGradient(flashColor, "horizontal"),
+            width: '250vw', // Longer for diagonal
+            height: '16px', // Thickened
+            transform: 'rotate(45deg) translateX(-50%)',
+            boxShadow: `
+              0 0 50px 25px ${flashColor === 'primary' ? '#3b82f6' : 
+               flashColor === 'accent' ? '#ec4899' :
+               flashColor === 'cyan' ? '#06b6d4' : 
+               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80,
+              0 0 100px 50px ${flashColor === 'primary' ? '#3b82f6' : 
+               flashColor === 'accent' ? '#ec4899' :
+               flashColor === 'cyan' ? '#06b6d4' : 
+               flashColor === 'purple' ? '#a855f7' : '#ff0000'}40
+            `,
+            animation: flashActive && flashType === "diagonal" ? 
+              "slowDiagonal 2s ease-in-out forwards" : "none",
+            filter: 'blur(1px)'
+          }}
+        />
+        
+        {/* Circle Flash - NEW EFFECT */}
+        <div 
+          className={cn(
+            "absolute top-1/2 left-1/2 rounded-full",
+            "transition-all duration-1000 ease-in-out",
+            flashActive && flashType === "circle" ? "opacity-60" : "opacity-0"
+          )}
+          style={{
+            background: `radial-gradient(circle, 
+              ${flashColor === 'primary' ? '#3b82f6' : 
+                flashColor === 'accent' ? '#ec4899' :
+                flashColor === 'cyan' ? '#06b6d4' : 
+                flashColor === 'purple' ? '#a855f7' : '#ff0000'}80, 
+              transparent 70%)`,
+            width: '0px',
+            height: '0px',
+            boxShadow: `
+              0 0 100px 50px ${flashColor === 'primary' ? '#3b82f6' : 
+               flashColor === 'accent' ? '#ec4899' :
+               flashColor === 'cyan' ? '#06b6d4' : 
+               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80
+            `,
+            animation: flashActive && flashType === "circle" ? 
+              "slowCircle 2s ease-in-out forwards" : "none",
+            transform: 'translate(-50%, -50%)',
+            filter: 'blur(8px)'
+          }}
+        />
+        
+        {/* Ambient Light Overlay - Enhanced */}
+        <div 
+          className={cn(
+            "absolute inset-0",
+            "transition-opacity duration-1500 ease-in-out",
+            flashActive ? "opacity-20" : "opacity-0"
+          )}
+          style={{
+            background: flashColor === 'primary' ? 
+              'radial-gradient(circle at 50% 50%, #3b82f640 0%, transparent 70%)' :
+              flashColor === 'accent' ? 
+              'radial-gradient(circle at 50% 50%, #ec489940 0%, transparent 70%)' :
+              flashColor === 'cyan' ? 
+              'radial-gradient(circle at 50% 50%, #06b6d440 0%, transparent 70%)' :
+              flashColor === 'purple' ? 
+              'radial-gradient(circle at 50% 50%, #a855f740 0%, transparent 70%)' :
+              'radial-gradient(circle at 50% 50%, #ff000040, #ff990040, #ffff0040, #00ff0040, #0099ff40, #6600ff40, transparent 70%)'
+          }}
+        />
+      </div>
+
       {/* Background decorative elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-80 h-80 bg-secondary/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
@@ -143,6 +369,13 @@ const ProjectFilter = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto px-4">
             A curated selection of my best work across different technologies and domains
           </p>
+          <div className="mt-6 flex items-center justify-center gap-2">
+            <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
+            <span className="text-sm text-muted-foreground bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full">
+              Dynamic flash effect every 3 seconds
+            </span>
+            <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
+          </div>
         </div>
 
         {/* Filter Buttons */}
@@ -337,6 +570,99 @@ const ProjectFilter = () => {
           </div>
         </div>
       </div>
+
+      {/* Add CSS for the slow, thick flash animations */}
+      <style jsx>{`
+        @keyframes slowHorizontal {
+          0% {
+            transform: translateY(-20px);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.8;
+          }
+          50% {
+            transform: translateY(50vh);
+            opacity: 0.7;
+          }
+          90% {
+            opacity: 0.8;
+          }
+          100% {
+            transform: translateY(calc(100vh + 20px));
+            opacity: 0;
+          }
+        }
+
+        @keyframes slowVertical {
+          0% {
+            transform: translateX(-20px);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.8;
+          }
+          50% {
+            transform: translateX(50vw);
+            opacity: 0.7;
+          }
+          90% {
+            opacity: 0.8;
+          }
+          100% {
+            transform: translateX(calc(100vw + 20px));
+            opacity: 0;
+          }
+        }
+
+        @keyframes slowDiagonal {
+          0% {
+            transform: rotate(45deg) translateX(-100%);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.8;
+          }
+          50% {
+            transform: rotate(45deg) translateX(0%);
+            opacity: 0.7;
+          }
+          90% {
+            opacity: 0.8;
+          }
+          100% {
+            transform: rotate(45deg) translateX(100%);
+            opacity: 0;
+          }
+        }
+
+        @keyframes slowCircle {
+          0% {
+            width: 0px;
+            height: 0px;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.1);
+          }
+          20% {
+            opacity: 0.6;
+          }
+          50% {
+            width: 500px;
+            height: 500px;
+            opacity: 0.6;
+            transform: translate(-50%, -50%) scale(1);
+          }
+          80% {
+            opacity: 0.6;
+          }
+          100% {
+            width: 1000px;
+            height: 1000px;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(2);
+          }
+        }
+      `}</style>
     </section>
   );
 };
