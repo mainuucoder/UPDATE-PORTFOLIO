@@ -126,7 +126,7 @@ const ProjectFilter = () => {
   };
 
   return (
-    <section className="py-20 bg-background overflow-hidden relative">
+    <section id="projects" className="py-20 bg-background overflow-hidden relative"> {/* ADDED id="projects" HERE */}
       {/* Background decorative elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />

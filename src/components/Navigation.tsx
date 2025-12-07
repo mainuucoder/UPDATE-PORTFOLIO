@@ -26,8 +26,17 @@ const Navigation = () => {
   const scrollToSection = (href: string) => {
     setIsOpen(false);
     const element = document.querySelector(href);
+    
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      // If element exists, scroll to it
+      element.scrollIntoView({ 
+        behavior: "smooth",
+        block: "start"
+      });
+    } else {
+      // If element doesn't exist, log error and scroll to top
+      console.warn(`Element with selector "${href}" not found`);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -39,13 +48,16 @@ const Navigation = () => {
     }`}>
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
+          {/* Logo with Home link */}
+          <button 
+            onClick={() => scrollToSection("#home")}
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
             <div className="w-10 h-10 gradient-hero rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">DM</span>
             </div>
             <span className="text-xl font-bold text-foreground">Daniel Mutahi</span>
-          </div>
+          </button>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -53,7 +65,7 @@ const Navigation = () => {
               <button
                 key={item.label}
                 onClick={() => scrollToSection(item.href)}
-                className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+                className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-3 py-2 rounded-md hover:bg-muted/50"
               >
                 {item.label}
               </button>
