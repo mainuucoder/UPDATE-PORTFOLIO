@@ -109,17 +109,19 @@ const ProjectFilter = () => {
   const [filteredProjects, setFilteredProjects] = useState(allProjects);
   const [isAnimating, setIsAnimating] = useState(false);
   const [flashActive, setFlashActive] = useState(false);
-  const [flashType, setFlashType] = useState<"horizontal" | "vertical" | "diagonal" | "circle">("horizontal");
-  const [flashColor, setFlashColor] = useState<"primary" | "accent" | "cyan" | "purple" | "rainbow">("primary");
+  const [flashType, setFlashType] = useState<"horizontal" | "vertical" | "diagonal" | "circle" | "wave">("horizontal");
+  const [flashColor, setFlashColor] = useState<"primary" | "accent" | "cyan" | "purple" | "rainbow" | "gold">("primary");
+  const [flashPosition, setFlashPosition] = useState({ x: 0, y: 0 });
   
   const flashIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Initialize flash effect
   useEffect(() => {
     // Start the flash interval
     flashIntervalRef.current = setInterval(() => {
       triggerFlash();
-    }, 3000); // Flash every 3 seconds
+    }, 3500); // Increased to 3.5 seconds for smoother timing
 
     // Cleanup interval on unmount
     return () => {
@@ -131,23 +133,32 @@ const ProjectFilter = () => {
 
   const triggerFlash = () => {
     // Randomize flash properties
-    const types: Array<"horizontal" | "vertical" | "diagonal" | "circle"> = [
-      "horizontal", "vertical", "diagonal", "circle"
+    const types: Array<"horizontal" | "vertical" | "diagonal" | "circle" | "wave"> = [
+      "horizontal", "vertical", "diagonal", "circle", "wave"
     ];
-    const colors: Array<"primary" | "accent" | "cyan" | "purple" | "rainbow"> = [
-      "primary", "accent", "cyan", "purple", "rainbow"
+    const colors: Array<"primary" | "accent" | "cyan" | "purple" | "rainbow" | "gold"> = [
+      "primary", "accent", "cyan", "purple", "rainbow", "gold"
     ];
+    
+    // Generate random position
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setFlashPosition({
+        x: Math.random() * rect.width,
+        y: Math.random() * rect.height
+      });
+    }
     
     setFlashType(types[Math.floor(Math.random() * types.length)]);
     setFlashColor(colors[Math.floor(Math.random() * colors.length)]);
     
-    // Activate flash
+    // Smooth activation
     setFlashActive(true);
     
-    // Deactivate flash after animation completes
+    // Longer duration for smoother effect
     setTimeout(() => {
       setFlashActive(false);
-    }, 2000); // Increased duration for slower movement
+    }, 2500); // Increased duration
   };
 
   const handleCategoryChange = (category: string) => {
@@ -173,184 +184,245 @@ const ProjectFilter = () => {
     switch(color) {
       case "primary":
         return `linear-gradient(${isVertical ? 0 : 90}deg, 
-          transparent, 
-          #3b82f6 15%, 
+          transparent 0%, 
+          #3b82f615 10%, 
+          #3b82f660 30%, 
           #8b5cf6 50%, 
-          #3b82f6 85%, 
-          transparent)`;
+          #3b82f660 70%, 
+          #3b82f615 90%, 
+          transparent 100%)`;
       case "accent":
         return `linear-gradient(${isVertical ? 0 : 90}deg, 
-          transparent, 
-          #ec4899 15%, 
+          transparent 0%, 
+          #ec489915 10%, 
+          #ec489960 30%, 
           #f97316 50%, 
-          #ec4899 85%, 
-          transparent)`;
+          #ec489960 70%, 
+          #ec489915 90%, 
+          transparent 100%)`;
       case "cyan":
         return `linear-gradient(${isVertical ? 0 : 90}deg, 
-          transparent, 
-          #06b6d4 15%, 
+          transparent 0%, 
+          #06b6d415 10%, 
+          #06b6d460 30%, 
           #22d3ee 50%, 
-          #06b6d4 85%, 
-          transparent)`;
+          #06b6d460 70%, 
+          #06b6d415 90%, 
+          transparent 100%)`;
       case "purple":
         return `linear-gradient(${isVertical ? 0 : 90}deg, 
-          transparent, 
-          #a855f7 15%, 
+          transparent 0%, 
+          #a855f715 10%, 
+          #a855f760 30%, 
           #d946ef 50%, 
-          #a855f7 85%, 
-          transparent)`;
+          #a855f760 70%, 
+          #a855f715 90%, 
+          transparent 100%)`;
       case "rainbow":
         return `linear-gradient(${isVertical ? 0 : 90}deg, 
-          transparent, 
-          #ff0000 10%, 
-          #ff9900 25%, 
-          #ffff00 40%, 
-          #00ff00 55%, 
-          #0099ff 70%, 
-          #6600ff 85%, 
-          transparent)`;
+          transparent 0%, 
+          #ff000015 5%, 
+          #ff990030 20%, 
+          #ffff0040 35%, 
+          #00ff0050 50%, 
+          #0099ff40 65%, 
+          #6600ff30 80%, 
+          transparent 100%)`;
+      case "gold":
+        return `linear-gradient(${isVertical ? 0 : 90}deg, 
+          transparent 0%, 
+          #FFD70015 10%, 
+          #FFD70060 30%, 
+          #FFA500 50%, 
+          #FFD70060 70%, 
+          #FFD70015 90%, 
+          transparent 100%)`;
       default:
         return `linear-gradient(${isVertical ? 0 : 90}deg, 
-          transparent, 
-          #3b82f6 15%, 
+          transparent 0%, 
+          #3b82f615 10%, 
+          #3b82f660 30%, 
           #8b5cf6 50%, 
-          #3b82f6 85%, 
-          transparent)`;
+          #3b82f660 70%, 
+          #3b82f615 90%, 
+          transparent 100%)`;
+    }
+  };
+
+  const getColorValue = (color: string) => {
+    switch(color) {
+      case "primary": return "#3b82f6";
+      case "accent": return "#ec4899";
+      case "cyan": return "#06b6d4";
+      case "purple": return "#a855f7";
+      case "gold": return "#FFD700";
+      default: return "#3b82f6";
     }
   };
 
   return (
-    <section id="projects" className="py-20 bg-background overflow-hidden relative">
-      {/* THICK FLASH LIGHT EFFECT */}
+    <section id="projects" className="py-20 bg-background overflow-hidden relative" ref={containerRef}>
+      {/* SMOOTH FLASH LIGHT EFFECT */}
       <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-        {/* Horizontal Flash - THICKENED */}
+        {/* Horizontal Flash - Smooth */}
         <div 
           className={cn(
-            "absolute top-0 left-0 w-full",
-            "transition-all duration-1000 ease-in-out",
-            flashActive && flashType === "horizontal" ? "opacity-70" : "opacity-0"
+            "absolute w-full",
+            "transition-all duration-1000 ease-[cubic-bezier(0.4,0,0.2,1)]",
+            flashActive && flashType === "horizontal" ? "opacity-100" : "opacity-0"
           )}
           style={{
             background: getFlashGradient(flashColor, "horizontal"),
-            height: '12px', // Thickened from 1px to 12px
+            height: '10px',
+            top: `${flashPosition.y}px`,
+            left: '0',
             boxShadow: `
-              0 0 40px 20px ${flashColor === 'primary' ? '#3b82f6' : 
-               flashColor === 'accent' ? '#ec4899' :
-               flashColor === 'cyan' ? '#06b6d4' : 
-               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80,
-              0 0 80px 40px ${flashColor === 'primary' ? '#3b82f6' : 
-               flashColor === 'accent' ? '#ec4899' :
-               flashColor === 'cyan' ? '#06b6d4' : 
-               flashColor === 'purple' ? '#a855f7' : '#ff0000'}40
+              0 0 60px 25px ${getColorValue(flashColor)}40,
+              0 0 120px 50px ${getColorValue(flashColor)}20
             `,
             animation: flashActive && flashType === "horizontal" ? 
-              "slowHorizontal 2s ease-in-out forwards" : "none",
-            filter: 'blur(1px)'
+              "ultraSmoothHorizontal 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards" : "none",
+            filter: 'blur(2px)',
+            transform: 'translateY(-50%)'
           }}
         />
         
-        {/* Vertical Flash - THICKENED */}
+        {/* Vertical Flash - Smooth */}
         <div 
           className={cn(
-            "absolute top-0 left-0 h-full",
-            "transition-all duration-1000 ease-in-out",
-            flashActive && flashType === "vertical" ? "opacity-70" : "opacity-0"
+            "absolute h-full",
+            "transition-all duration-1000 ease-[cubic-bezier(0.4,0,0.2,1)]",
+            flashActive && flashType === "vertical" ? "opacity-100" : "opacity-0"
           )}
           style={{
             background: getFlashGradient(flashColor, "vertical"),
-            width: '12px', // Thickened from 1px to 12px
+            width: '10px',
+            left: `${flashPosition.x}px`,
+            top: '0',
             boxShadow: `
-              0 0 40px 20px ${flashColor === 'primary' ? '#3b82f6' : 
-               flashColor === 'accent' ? '#ec4899' :
-               flashColor === 'cyan' ? '#06b6d4' : 
-               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80,
-              0 0 80px 40px ${flashColor === 'primary' ? '#3b82f6' : 
-               flashColor === 'accent' ? '#ec4899' :
-               flashColor === 'cyan' ? '#06b6d4' : 
-               flashColor === 'purple' ? '#a855f7' : '#ff0000'}40
+              0 0 60px 25px ${getColorValue(flashColor)}40,
+              0 0 120px 50px ${getColorValue(flashColor)}20
             `,
             animation: flashActive && flashType === "vertical" ? 
-              "slowVertical 2s ease-in-out forwards" : "none",
-            filter: 'blur(1px)'
+              "ultraSmoothVertical 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards" : "none",
+            filter: 'blur(2px)',
+            transform: 'translateX(-50%)'
           }}
         />
         
-        {/* Diagonal Flash - THICKENED */}
+        {/* Diagonal Flash - Smooth */}
         <div 
           className={cn(
-            "absolute top-0 left-0",
-            "transition-all duration-1000 ease-in-out",
-            flashActive && flashType === "diagonal" ? "opacity-70" : "opacity-0"
+            "absolute",
+            "transition-all duration-1000 ease-[cubic-bezier(0.4,0,0.2,1)]",
+            flashActive && flashType === "diagonal" ? "opacity-100" : "opacity-0"
           )}
           style={{
             background: getFlashGradient(flashColor, "horizontal"),
-            width: '250vw', // Longer for diagonal
-            height: '16px', // Thickened
-            transform: 'rotate(45deg) translateX(-50%)',
+            width: '300vw',
+            height: '12px',
+            left: '-100vw',
+            top: `${flashPosition.y}px`,
+            transform: 'rotate(45deg)',
             boxShadow: `
-              0 0 50px 25px ${flashColor === 'primary' ? '#3b82f6' : 
-               flashColor === 'accent' ? '#ec4899' :
-               flashColor === 'cyan' ? '#06b6d4' : 
-               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80,
-              0 0 100px 50px ${flashColor === 'primary' ? '#3b82f6' : 
-               flashColor === 'accent' ? '#ec4899' :
-               flashColor === 'cyan' ? '#06b6d4' : 
-               flashColor === 'purple' ? '#a855f7' : '#ff0000'}40
+              0 0 80px 30px ${getColorValue(flashColor)}40,
+              0 0 160px 60px ${getColorValue(flashColor)}20
             `,
             animation: flashActive && flashType === "diagonal" ? 
-              "slowDiagonal 2s ease-in-out forwards" : "none",
-            filter: 'blur(1px)'
+              "ultraSmoothDiagonal 3s cubic-bezier(0.4, 0, 0.2, 1) forwards" : "none",
+            filter: 'blur(3px)',
+            transformOrigin: 'center'
           }}
         />
         
-        {/* Circle Flash - NEW EFFECT */}
+        {/* Circle Flash - Ultra Smooth */}
         <div 
           className={cn(
-            "absolute top-1/2 left-1/2 rounded-full",
-            "transition-all duration-1000 ease-in-out",
-            flashActive && flashType === "circle" ? "opacity-60" : "opacity-0"
+            "absolute rounded-full",
+            "transition-all duration-1500 ease-[cubic-bezier(0.4,0,0.2,1)]",
+            flashActive && flashType === "circle" ? "opacity-100" : "opacity-0"
           )}
           style={{
             background: `radial-gradient(circle, 
-              ${flashColor === 'primary' ? '#3b82f6' : 
-                flashColor === 'accent' ? '#ec4899' :
-                flashColor === 'cyan' ? '#06b6d4' : 
-                flashColor === 'purple' ? '#a855f7' : '#ff0000'}80, 
+              ${getColorValue(flashColor)}80 0%, 
+              ${getColorValue(flashColor)}40 30%, 
               transparent 70%)`,
-            width: '0px',
-            height: '0px',
+            left: `${flashPosition.x}px`,
+            top: `${flashPosition.y}px`,
             boxShadow: `
-              0 0 100px 50px ${flashColor === 'primary' ? '#3b82f6' : 
-               flashColor === 'accent' ? '#ec4899' :
-               flashColor === 'cyan' ? '#06b6d4' : 
-               flashColor === 'purple' ? '#a855f7' : '#ff0000'}80
+              0 0 100px 50px ${getColorValue(flashColor)}40,
+              0 0 200px 100px ${getColorValue(flashColor)}20
             `,
             animation: flashActive && flashType === "circle" ? 
-              "slowCircle 2s ease-in-out forwards" : "none",
-            transform: 'translate(-50%, -50%)',
-            filter: 'blur(8px)'
+              "ultraSmoothCircle 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards" : "none",
+            filter: 'blur(10px)',
+            transform: 'translate(-50%, -50%)'
           }}
         />
         
-        {/* Ambient Light Overlay - Enhanced */}
+        {/* Wave Flash - New Smooth Effect */}
+        <div 
+          className={cn(
+            "absolute",
+            "transition-all duration-1000 ease-[cubic-bezier(0.4,0,0.2,1)]",
+            flashActive && flashType === "wave" ? "opacity-100" : "opacity-0"
+          )}
+          style={{
+            background: getFlashGradient(flashColor, "horizontal"),
+            width: '200vw',
+            height: '15px',
+            left: '-50vw',
+            top: `${flashPosition.y}px`,
+            borderRadius: '100%',
+            boxShadow: `
+              0 0 70px 35px ${getColorValue(flashColor)}40,
+              0 0 140px 70px ${getColorValue(flashColor)}20
+            `,
+            animation: flashActive && flashType === "wave" ? 
+              "ultraSmoothWave 3s cubic-bezier(0.4, 0, 0.2, 1) forwards" : "none",
+            filter: 'blur(4px)',
+            transform: 'translateY(-50%)'
+          }}
+        />
+        
+        {/* Smooth Ambient Glow Overlay */}
         <div 
           className={cn(
             "absolute inset-0",
-            "transition-opacity duration-1500 ease-in-out",
-            flashActive ? "opacity-20" : "opacity-0"
+            "transition-all duration-2000 ease-[cubic-bezier(0.4,0,0.2,1)]",
+            flashActive ? "opacity-30" : "opacity-0"
           )}
           style={{
-            background: flashColor === 'primary' ? 
-              'radial-gradient(circle at 50% 50%, #3b82f640 0%, transparent 70%)' :
-              flashColor === 'accent' ? 
-              'radial-gradient(circle at 50% 50%, #ec489940 0%, transparent 70%)' :
-              flashColor === 'cyan' ? 
-              'radial-gradient(circle at 50% 50%, #06b6d440 0%, transparent 70%)' :
-              flashColor === 'purple' ? 
-              'radial-gradient(circle at 50% 50%, #a855f740 0%, transparent 70%)' :
-              'radial-gradient(circle at 50% 50%, #ff000040, #ff990040, #ffff0040, #00ff0040, #0099ff40, #6600ff40, transparent 70%)'
+            background: `radial-gradient(circle at ${flashPosition.x}px ${flashPosition.y}px, 
+              ${getColorValue(flashColor)}30 0%, 
+              transparent 60%)`,
+            animation: flashActive ? "gentlePulse 2.5s ease-in-out" : "none"
           }}
         />
+        
+        {/* Subtle Particle Effect */}
+        <div className={cn(
+          "absolute inset-0",
+          flashActive ? "opacity-100" : "opacity-0",
+          "transition-opacity duration-1000"
+        )}>
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                background: getColorValue(flashColor),
+                width: `${Math.random() * 6 + 2}px`,
+                height: `${Math.random() * 6 + 2}px`,
+                left: `${flashPosition.x + (Math.random() - 0.5) * 200}px`,
+                top: `${flashPosition.y + (Math.random() - 0.5) * 200}px`,
+                opacity: Math.random() * 0.6 + 0.2,
+                animation: flashActive ? `floatParticle ${Math.random() * 2 + 1}s ease-out forwards` : 'none',
+                filter: 'blur(1px)'
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Background decorative elements */}
@@ -369,10 +441,10 @@ const ProjectFilter = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto px-4">
             A curated selection of my best work across different technologies and domains
           </p>
-          <div className="mt-6 flex items-center justify-center gap-2">
+          <div className="mt-6 flex items-center justify-center gap-3">
             <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
-            <span className="text-sm text-muted-foreground bg-black/20 backdrop-blur-sm px-3 py-1 rounded-full">
-              Dynamic flash effect every 3 seconds
+            <span className="text-sm text-muted-foreground bg-black/20 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/10">
+              Smooth dynamic light effect • Every 3.5 seconds
             </span>
             <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
           </div>
@@ -571,63 +643,63 @@ const ProjectFilter = () => {
         </div>
       </div>
 
-      {/* Add CSS for the slow, thick flash animations */}
+      {/* Add CSS for ultra smooth animations */}
       <style jsx>{`
-        @keyframes slowHorizontal {
+        @keyframes ultraSmoothHorizontal {
           0% {
-            transform: translateY(-20px);
+            transform: translateX(-100%) translateY(-50%);
             opacity: 0;
           }
-          10% {
+          15% {
             opacity: 0.8;
           }
           50% {
-            transform: translateY(50vh);
-            opacity: 0.7;
+            transform: translateX(0%) translateY(-50%);
+            opacity: 0.9;
           }
-          90% {
+          85% {
             opacity: 0.8;
           }
           100% {
-            transform: translateY(calc(100vh + 20px));
+            transform: translateX(100%) translateY(-50%);
             opacity: 0;
           }
         }
 
-        @keyframes slowVertical {
+        @keyframes ultraSmoothVertical {
           0% {
-            transform: translateX(-20px);
+            transform: translateY(-100%) translateX(-50%);
             opacity: 0;
           }
-          10% {
+          15% {
             opacity: 0.8;
           }
           50% {
-            transform: translateX(50vw);
-            opacity: 0.7;
+            transform: translateY(0%) translateX(-50%);
+            opacity: 0.9;
           }
-          90% {
+          85% {
             opacity: 0.8;
           }
           100% {
-            transform: translateX(calc(100vw + 20px));
+            transform: translateY(100%) translateX(-50%);
             opacity: 0;
           }
         }
 
-        @keyframes slowDiagonal {
+        @keyframes ultraSmoothDiagonal {
           0% {
             transform: rotate(45deg) translateX(-100%);
             opacity: 0;
           }
-          10% {
+          15% {
             opacity: 0.8;
           }
           50% {
             transform: rotate(45deg) translateX(0%);
-            opacity: 0.7;
+            opacity: 0.9;
           }
-          90% {
+          85% {
             opacity: 0.8;
           }
           100% {
@@ -636,30 +708,85 @@ const ProjectFilter = () => {
           }
         }
 
-        @keyframes slowCircle {
+        @keyframes ultraSmoothCircle {
           0% {
             width: 0px;
             height: 0px;
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.1);
+            transform: translate(-50%, -50%) scale(0);
           }
           20% {
-            opacity: 0.6;
+            opacity: 0.7;
           }
           50% {
-            width: 500px;
-            height: 500px;
-            opacity: 0.6;
+            width: 300px;
+            height: 300px;
+            opacity: 0.8;
             transform: translate(-50%, -50%) scale(1);
           }
           80% {
-            opacity: 0.6;
+            opacity: 0.7;
           }
           100% {
-            width: 1000px;
-            height: 1000px;
+            width: 600px;
+            height: 600px;
             opacity: 0;
             transform: translate(-50%, -50%) scale(2);
+          }
+        }
+
+        @keyframes ultraSmoothWave {
+          0% {
+            transform: translateX(-100%) translateY(-50%);
+            opacity: 0;
+          }
+          15% {
+            opacity: 0.7;
+            transform: translateX(-50%) translateY(-50%);
+          }
+          50% {
+            opacity: 0.9;
+            transform: translateX(0%) translateY(-50%);
+          }
+          85% {
+            opacity: 0.7;
+            transform: translateX(50%) translateY(-50%);
+          }
+          100% {
+            transform: translateX(100%) translateY(-50%);
+            opacity: 0;
+          }
+        }
+
+        @keyframes gentlePulse {
+          0% {
+            opacity: 0;
+          }
+          30% {
+            opacity: 0.3;
+          }
+          70% {
+            opacity: 0.3;
+          }
+          100% {
+            opacity: 0;
+          }
+        }
+
+        @keyframes floatParticle {
+          0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.8;
+          }
+          50% {
+            opacity: 0.4;
+          }
+          100% {
+            transform: translate(
+              ${Math.random() * 100 - 50}px,
+              ${Math.random() * 100 - 50}px
+            ) scale(0);
+            opacity: 0;
           }
         }
       `}</style>

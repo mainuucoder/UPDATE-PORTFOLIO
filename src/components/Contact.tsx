@@ -1,6 +1,79 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Github, Linkedin, Download, Send } from "lucide-react";
+import { 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Github, 
+  Linkedin, 
+  Download, 
+  Send, 
+  FileText,
+  CheckCircle,
+  Loader2,
+  X,
+  Check,
+  AlertCircle,
+  Facebook,
+  MessageCircle
+} from "lucide-react";
+import { useState, useEffect } from "react";
+
+// Custom Toast Component
+interface ToastProps {
+  message: string;
+  type: 'success' | 'error' | 'info';
+  onClose: () => void;
+}
+
+const Toast = ({ message, type, onClose }: ToastProps) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  const typeConfig = {
+    success: {
+      bg: "bg-green-500",
+      icon: <Check className="w-4 h-4" />,
+      border: "border-green-400",
+    },
+    error: {
+      bg: "bg-red-500",
+      icon: <AlertCircle className="w-4 h-4" />,
+      border: "border-red-400",
+    },
+    info: {
+      bg: "bg-blue-500",
+      icon: <CheckCircle className="w-4 h-4" />,
+      border: "border-blue-400",
+    },
+  };
+
+  const config = typeConfig[type];
+
+  return (
+    <div className={`animate-slide-in fixed top-4 right-4 z-50 min-w-[280px] max-w-[90vw] rounded-lg shadow-lg border ${config.border} ${config.bg}/90 backdrop-blur-sm text-white p-3 text-sm transform transition-all duration-300`}>
+      <div className="flex items-start gap-2">
+        <div className="flex-shrink-0 mt-0.5">
+          {config.icon}
+        </div>
+        <div className="flex-1">
+          <p className="font-medium">{message}</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="flex-shrink-0 hover:bg-white/20 rounded-full p-0.5 transition-colors"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const contactInfo = [
   {
@@ -8,24 +81,27 @@ const contactInfo = [
     label: "Email",
     value: "mutahidaniel2000@gmail.com",
     href: "mailto:mutahidaniel2000@gmail.com",
-    color: "text-primary",
-    bgColor: "bg-primary/10",
+    color: "text-red-500",
+    bgColor: "bg-red-500/10",
+    hoverColor: "hover:bg-red-500/20",
   },
   {
     icon: Phone,
     label: "Phone",
     value: "+254 703 343 652",
     href: "tel:+254703343652",
-    color: "text-secondary",
-    bgColor: "bg-secondary/10",
+    color: "text-green-500",
+    bgColor: "bg-green-500/10",
+    hoverColor: "hover:bg-green-500/20",
   },
   {
     icon: MapPin,
     label: "Location",
     value: "Garissa, Kenya",
-    href: "#",
-    color: "text-accent",
-    bgColor: "bg-accent/10",
+    href: "https://maps.google.com/?q=Garissa,Kenya",
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+    hoverColor: "hover:bg-blue-500/20",
   },
 ];
 
@@ -34,76 +110,230 @@ const socialLinks = [
     icon: Github,
     label: "GitHub",
     href: "https://github.com/mainuucoder",
-    color: "text-foreground hover:text-primary",
+    color: "bg-gray-900 hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700",
+    iconColor: "text-white",
   },
   {
     icon: Linkedin,
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/daniel-mutahi-5952ba298",
-    color: "text-foreground hover:text-primary",
+    color: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800",
+    iconColor: "text-white",
+  },
+  {
+    icon: Facebook,
+    label: "Facebook",
+    href: "https://facebook.com/yourusername",
+    color: "bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700",
+    iconColor: "text-white",
+  },
+  {
+    icon: MessageCircle,
+    label: "Telegram",
+    href: "https://t.me/yourusername",
+    color: "bg-sky-500 hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-700",
+    iconColor: "text-white",
   },
 ];
 
+interface ToastMessage {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
+
 const Contact = () => {
-  // CV file path - adjust this to match your actual file name and location
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  
+  // CV file path
   const cvFilePath = "/daniel-mutahi-cv.pdf";
   
-  // Handle CV download
-  const handleDownloadCV = () => {
-    // Create a temporary anchor element
-    const link = document.createElement('a');
-    link.href = cvFilePath;
+ 
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkqlnwq";
+  
+  // Show toast function
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+  };
+
+  // Remove toast
+  const removeToast = (id: number) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
+
+  // Handle CV download with feedback
+  const handleDownloadCV = async () => {
+    setIsDownloading(true);
     
-    // Extract filename from path or set custom name
-    const fileName = cvFilePath.split('/').pop() || 'daniel-mutahi-cv.pdf';
-    link.download = fileName;
-    
-    // Append to body, click, and remove
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      const link = document.createElement('a');
+      link.href = cvFilePath;
+      const fileName = "Daniel-Mutahi-Resume.pdf";
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showToast("CV downloaded successfully!", 'success');
+    } catch (error) {
+      showToast("Failed to download CV. Please try again.", 'error');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission with Formspree
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Validation
+    if (!formData.email || !formData.message) {
+      showToast("Please fill in all required fields", 'error');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          _replyto: formData.email, // This ensures replies go to the sender
+          _subject: `Portfolio Contact: ${formData.subject}`,
+        })
+      });
+
+      if (response.ok) {
+        showToast("Message sent successfully! I'll get back to you soon.", 'success');
+        
+        // Reset form
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      showToast("Failed to send message. Please try again or email me directly.", 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Copy email to clipboard
+  const copyToClipboard = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(`${type} copied to clipboard!`, 'success');
+    } catch (error) {
+      showToast("Failed to copy to clipboard", 'error');
+    }
   };
 
   return (
-    <section id="contact" className="py-20 bg-muted/30">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-foreground mb-4">Get In Touch</h2>
-          <div className="w-24 h-1 gradient-accent mx-auto rounded-full mb-4"></div>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Ready to collaborate or discuss opportunities? I'd love to hear from you!
+    <section id="contact" className="py-12 md:py-16 bg-gradient-to-b from-background to-muted/20">
+      {/* Toast Container */}
+      <div className="fixed top-4 right-4 z-50 space-y-2">
+        {toasts.map(toast => (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => removeToast(toast.id)}
+          />
+        ))}
+      </div>
+      
+      <div className="container mx-auto px-4 sm:px-6">
+        {/* Header - Made smaller for mobile */}
+        <div className="text-center mb-10 md:mb-14">
+          <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
+            Contact
+          </span>
+          <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3">
+            Get In Touch
+          </h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full mb-4"></div>
+          <p className="text-muted-foreground text-sm md:text-base max-w-2xl mx-auto px-2">
+            Ready to collaborate or discuss opportunities?
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Information */}
-          <div className="space-y-8">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-10 max-w-5xl mx-auto">
+          {/* Left Column - Contact Information */}
+          <div className="space-y-6">
+            {/* Contact Cards */}
             <div>
-              <h3 className="text-2xl font-bold text-foreground mb-6">Contact Information</h3>
-              <div className="space-y-4">
+              <h3 className="text-lg md:text-xl font-bold text-foreground mb-4">
+                Contact Info
+              </h3>
+              <div className="space-y-3">
                 {contactInfo.map((info, index) => (
                   <Card 
                     key={index}
-                    className="shadow-card hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border-0"
+                    className="shadow-md hover:shadow-lg transition-all duration-300 border border-border/50 bg-card/80 overflow-hidden"
                   >
-                    <CardContent className="p-6">
+                    <CardContent className="p-4">
                       <a
                         href={info.href}
-                        className="flex items-center space-x-4 group"
+                        className="flex items-center space-x-3"
                         target={info.href.startsWith('http') ? "_blank" : "_self"}
                         rel={info.href.startsWith('http') ? "noopener noreferrer" : undefined}
                       >
-                        <div className={`p-3 rounded-full ${info.bgColor} group-hover:scale-110 transition-transform duration-300`}>
-                          <info.icon className={`w-6 h-6 ${info.color}`} />
+                        <div className={`p-3 rounded-xl ${info.bgColor} transition-transform duration-300`}>
+                          <info.icon className={`w-5 h-5 ${info.color}`} />
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide truncate">
                             {info.label}
                           </p>
-                          <p className="text-lg font-semibold text-card-foreground group-hover:text-primary transition-colors duration-300">
+                          <p className="text-sm md:text-base font-semibold text-foreground truncate">
                             {info.value}
                           </p>
                         </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-xs px-2 py-1 h-auto"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            copyToClipboard(info.value.replace('+254 ', '+254'), info.label);
+                          }}
+                        >
+                          Copy
+                        </Button>
                       </a>
                     </CardContent>
                   </Card>
@@ -111,124 +341,254 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Social Links */}
+            {/* Social Links - COMPACT VERSION */}
             <div>
-              <h3 className="text-2xl font-bold text-foreground mb-6">Connect With Me</h3>
-              <div className="flex gap-4">
+              <h3 className="text-lg md:text-xl font-bold text-foreground mb-3">
+                Connect With Me
+              </h3>
+              
+              <div className="flex flex-wrap gap-2 md:gap-3">
                 {socialLinks.map((social, index) => (
                   <a
                     key={index}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`p-4 rounded-full bg-card shadow-card hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 hover:scale-110 ${social.color}`}
+                    className={`relative p-3 md:p-3.5 rounded-lg ${social.color} shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center group`}
                     title={social.label}
                   >
-                    <social.icon className="w-6 h-6" />
+                    <social.icon className={`w-4 h-4 md:w-5 md:h-5 ${social.iconColor}`} />
+                    <span className="sr-only">{social.label}</span>
+                    <span className="absolute -top-1 -right-1 text-[10px] font-semibold text-white/40">
+                      ↗
+                    </span>
                   </a>
                 ))}
               </div>
+              
+              <p className="text-xs text-muted-foreground mt-2">
+                Available on all platforms
+              </p>
             </div>
 
-            {/* CV Download */}
-            <Card className="shadow-card hover:shadow-lg transition-all duration-300 border-0">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-lg font-semibold text-card-foreground mb-2">
-                      Download My CV
-                    </h4>
-                    <p className="text-muted-foreground text-sm">
-                      Get a detailed overview of my experience and skills
-                    </p>
+            {/* CV Download Card - Compact */}
+            <Card className="shadow-lg border-primary/20 bg-gradient-to-br from-card to-primary/5">
+              <CardContent className="p-4 md:p-5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <FileText className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm md:text-base font-bold text-foreground mb-1">
+                        Download Resume
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Skills, experience & projects
+                      </p>
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-primary/10 text-primary mt-1 inline-block">
+                        PDF
+                      </span>
+                    </div>
                   </div>
                   <Button
                     onClick={handleDownloadCV}
-                    className="bg-primary hover:bg-primary-dark text-primary-foreground"
-                    title="Download CV"
+                    disabled={isDownloading}
+                    className="text-xs md:text-sm px-3 py-2 h-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-md hover:shadow-primary/20"
+                    size="sm"
                   >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download CV
+                    {isDownloading ? (
+                      <>
+                        <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />
+                        Downloading...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-3 h-3 mr-1.5" />
+                        Download CV
+                      </>
+                    )}
                   </Button>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Quick Response Note - Smaller */}
+            <div className="p-3 rounded-lg bg-secondary/10 border border-secondary/20">
+              <div className="flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-secondary mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Quick Response</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Respond within 24 hours
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Right Column - Contact Form */}
           <div>
-            <Card className="shadow-card hover:shadow-lg transition-all duration-300 border-0">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-card-foreground mb-6">Send a Message</h3>
-                <form className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">
-                        First Name
+            <Card className="shadow-lg border-border/50 bg-card/80">
+              <CardContent className="p-5 md:p-6">
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="p-1.5 rounded-md bg-primary/10">
+                    <Send className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-foreground">Send Message</h3>
+                    <p className="text-xs text-muted-foreground">
+                      I'll respond as soon as possible
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Formspree Form */}
+                <form 
+                  action={FORMSPREE_ENDPOINT}
+                  method="POST"
+                  onSubmit={handleSubmit}
+                  className="space-y-4"
+                >
+                  {/* Formspree hidden fields for better email formatting */}
+                  <input type="hidden" name="_replyto" value={formData.email} />
+                  <input type="hidden" name="_subject" value={`Portfolio Contact: ${formData.subject}`} />
+                  <input type="hidden" name="_format" value="plain" />
+                  
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label htmlFor="firstName" className="block text-xs md:text-sm font-medium text-foreground">
+                        First Name *
                       </label>
                       <input
                         type="text"
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200"
+                        id="firstName"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-3 py-2.5 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200 outline-none"
                         placeholder="John"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-2">
-                        Last Name
+                    <div className="space-y-1.5">
+                      <label htmlFor="lastName" className="block text-xs md:text-sm font-medium text-foreground">
+                        Last Name *
                       </label>
                       <input
                         type="text"
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200"
+                        id="lastName"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full px-3 py-2.5 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200 outline-none"
                         placeholder="Doe"
                       />
                     </div>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">
-                      Email Address
+                  <div className="space-y-1.5">
+                    <label htmlFor="email" className="block text-xs md:text-sm font-medium text-foreground">
+                      Email Address *
                     </label>
                     <input
                       type="email"
-                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-3 py-2.5 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200 outline-none"
                       placeholder="john.doe@example.com"
                     />
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">
-                      Subject
+                  <div className="space-y-1.5">
+                    <label htmlFor="subject" className="block text-xs md:text-sm font-medium text-foreground">
+                      Subject *
                     </label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-3 py-2.5 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200 outline-none"
                       placeholder="Project Collaboration"
                     />
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">
-                      Message
+                  <div className="space-y-1.5">
+                    <label htmlFor="message" className="block text-xs md:text-sm font-medium text-foreground">
+                      Message *
                     </label>
                     <textarea
-                      rows={6}
-                      className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-colors duration-200 resize-none"
-                      placeholder="Tell me about your project or opportunity..."
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      required
+                      rows={4}
+                      className="w-full px-3 py-2.5 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground/70 focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200 resize-none outline-none"
+                      placeholder="Hi Daniel, I'd like to discuss..."
                     ></textarea>
                   </div>
                   
                   <Button
                     type="submit"
-                    size="lg"
-                    className="w-full bg-primary hover:bg-primary-dark text-primary-foreground"
+                    disabled={isSubmitting}
+                    className="w-full text-sm py-2.5 rounded-lg bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-md hover:shadow-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-5 h-5 mr-2" />
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Message
+                      </>
+                    )}
                   </Button>
+                  
+                  <p className="text-center text-xs text-muted-foreground pt-2">
+                    Your information is safe with me
+                  </p>
                 </form>
               </CardContent>
             </Card>
+
+            {/* Contact Preferences - Smaller */}
+            <div className="mt-4 p-3 rounded-lg bg-sky-500/5 border border-sky-500/20">
+              <div className="flex items-center gap-2 mb-2">
+                <MessageCircle className="w-4 h-4 text-sky-500" />
+                <p className="text-xs font-medium text-foreground">Best Ways to Reach Me</p>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <div className="text-center p-1.5 rounded-md bg-sky-500/10">
+                  <p className="text-[10px] font-semibold text-sky-600">Quick</p>
+                  <p className="text-[9px] text-muted-foreground">Telegram</p>
+                </div>
+                <div className="text-center p-1.5 rounded-md bg-green-500/10">
+                  <p className="text-[10px] font-semibold text-green-600">Formal</p>
+                  <p className="text-[9px] text-muted-foreground">Email</p>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Footer Note - Smaller */}
+        <div className="mt-10 md:mt-12 text-center">
+          <p className="text-xs text-muted-foreground">
+            Open to remote work • Available for projects • Based in Kenya (GMT+3)
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Or email me directly at: mutahidaniel2000@gmail.com
+          </p>
         </div>
       </div>
     </section>
