@@ -158,6 +158,7 @@ const Contact = () => {
   const cvFilePath = "/daniel-mutahi-cv.pdf";
   
  
+  
   const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkqlnwq";
   
   // Show toast function
@@ -279,9 +280,7 @@ const Contact = () => {
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header - Made smaller for mobile */}
         <div className="text-center mb-10 md:mb-14">
-          <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
-            Contact
-          </span>
+          
           <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3">
             Get In Touch
           </h2>

@@ -441,13 +441,7 @@ const ProjectFilter = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto px-4">
             A curated selection of my best work across different technologies and domains
           </p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
-            <span className="text-sm text-muted-foreground bg-black/20 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/10">
-              Smooth dynamic light effect • Every 3.5 seconds
-            </span>
-            <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse" />
-          </div>
+         
         </div>
 
         {/* Filter Buttons */}
