@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Home, User, Heart, Briefcase, Mail } from "lucide-react";
+import { Menu, X, Home, User, Heart, Briefcase, Mail, Images } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Add this import
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate(); // Add this
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,27 +18,40 @@ const Navigation = () => {
   }, []);
 
   const navItems = [
-    { label: "Home", href: "#home", icon: Home },
-    { label: "About", href: "#about", icon: User },
-    { label: "Interests", href: "#interests", icon: Heart },
-    { label: "Projects", href: "#projects", icon: Briefcase },
-    { label: "Contact", href: "#contact", icon: Mail },
+    { label: "Home", href: "#home", icon: Home, isScroll: true },
+    { label: "About", href: "#about", icon: User, isScroll: true },
+    { label: "Interests", href: "#interests", icon: Heart, isScroll: true },
+    { label: "Projects", href: "#projects", icon: Briefcase, isScroll: true },
+    { label: "Gallery", href: "/gallery", icon: Images, isScroll: false }, // Changed to route
+    { label: "Contact", href: "#contact", icon: Mail, isScroll: true },
   ];
 
-  const scrollToSection = (href: string) => {
+  const handleNavigation = (item: typeof navItems[0]) => {
     setIsOpen(false);
-    const element = document.querySelector(href);
     
-    if (element) {
-      // If element exists, scroll to it
-      element.scrollIntoView({ 
-        behavior: "smooth",
-        block: "start"
-      });
+    if (item.isScroll) {
+      // Scroll to section on home page
+      if (window.location.pathname !== "/") {
+        // If not on home page, navigate to home first then scroll
+        navigate("/");
+        setTimeout(() => {
+          const element = document.querySelector(item.href);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 100);
+      } else {
+        // Already on home page, just scroll
+        const element = document.querySelector(item.href);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          console.warn(`Element with selector "${item.href}" not found`);
+        }
+      }
     } else {
-      // If element doesn't exist, log error and scroll to top
-      console.warn(`Element with selector "${href}" not found`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Navigate to different page
+      navigate(item.href);
     }
   };
 
@@ -50,7 +65,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo with Home link */}
           <button 
-            onClick={() => scrollToSection("#home")}
+            onClick={() => handleNavigation({ label: "Home", href: "#home", icon: Home, isScroll: true })}
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
           >
             <div className="w-10 h-10 gradient-hero rounded-lg flex items-center justify-center">
@@ -64,14 +79,14 @@ const Navigation = () => {
             {navItems.map((item) => (
               <button
                 key={item.label}
-                onClick={() => scrollToSection(item.href)}
+                onClick={() => handleNavigation(item)}
                 className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-3 py-2 rounded-md hover:bg-muted/50"
               >
                 {item.label}
               </button>
             ))}
             <Button
-              onClick={() => scrollToSection("#contact")}
+              onClick={() => handleNavigation({ label: "Contact", href: "#contact", icon: Mail, isScroll: true })}
               className="bg-primary hover:bg-primary-dark text-primary-foreground"
             >
               Hire Me
@@ -98,7 +113,7 @@ const Navigation = () => {
                 return (
                   <button
                     key={item.label}
-                    onClick={() => scrollToSection(item.href)}
+                    onClick={() => handleNavigation(item)}
                     className="w-full flex items-center px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors duration-200"
                   >
                     <Icon className="w-5 h-5 mr-3" />
@@ -107,7 +122,7 @@ const Navigation = () => {
                 );
               })}
               <Button
-                onClick={() => scrollToSection("#contact")}
+                onClick={() => handleNavigation({ label: "Contact", href: "#contact", icon: Mail, isScroll: true })}
                 className="w-full mt-4 bg-primary hover:bg-primary-dark text-primary-foreground"
               >
                 Hire Me

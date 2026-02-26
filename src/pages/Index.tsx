@@ -11,6 +11,7 @@ import CustomCursor from "@/components/CustomCursor";
 import ThemeToggle from "@/components/ThemeToggle";
 import LoadingScreen from "@/components/LoadingScreen";
 import ScrollAnimation from "@/components/ScrollAnimations";
+// Remove Gallery import
 
 const Index = () => {
   return (
@@ -35,6 +36,7 @@ const Index = () => {
         <ScrollAnimation animation="fadeInRight" delay={600}>
           <ProjectFilter />
         </ScrollAnimation>
+        {/* Remove Gallery section */}
         <ScrollAnimation animation="slideInUp" delay={800}>
           <Contact />
         </ScrollAnimation>

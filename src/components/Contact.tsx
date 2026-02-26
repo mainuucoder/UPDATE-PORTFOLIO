@@ -15,7 +15,8 @@ import {
   Check,
   AlertCircle,
   Facebook,
-  MessageCircle
+  MessageCircle,
+  WhatsAppIcon
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -136,6 +137,30 @@ const socialLinks = [
   },
 ];
 
+// Custom WhatsApp Icon Component (since it's not in lucide-react by default)
+const WhatsAppIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+  >
+    <path d="M19.077 4.928C17.191 3.041 14.683 2 12.006 2 6.798 2 2.548 6.193 2.54 11.393c-.003 1.747.456 3.457 1.328 4.985L2.25 21.75l5.407-1.566c1.468.826 3.126 1.261 4.833 1.262h.004c5.198 0 9.456-4.195 9.464-9.396.004-2.51-.972-4.87-2.858-6.757zM12.011 20.045h-.003c-1.497 0-2.965-.403-4.242-1.162l-.304-.18-3.209.93.995-3.112-.182-.318a8.393 8.393 0 0 1-1.275-4.465c.008-4.64 3.78-8.406 8.43-8.406 2.251 0 4.367.878 5.958 2.473a8.366 8.366 0 0 1 2.469 5.972c-.008 4.642-3.78 8.408-8.437 8.408zm4.624-6.282c-.248-.124-1.465-.722-1.692-.805-.227-.083-.392-.124-.556.124-.164.248-.639.805-.783.97-.144.165-.289.186-.537.062-.717-.332-1.311-.736-1.842-1.258-.694-.681-1.164-1.514-1.301-1.776-.136-.262-.014-.404.102-.534.105-.117.235-.305.352-.457.117-.152.156-.262.234-.435.078-.173.039-.326-.02-.456-.059-.13-.556-1.337-.762-1.83-.2-.477-.404-.413-.556-.42l-.475-.008c-.164 0-.43.062-.655.31-.225.249-.86.84-.86 2.05 0 1.21.88 2.378 1.004 2.543.124.165 1.733 2.647 4.2 3.712.586.253 1.044.405 1.4.518.588.186 1.124.16 1.548.097.472-.07 1.455-.594 1.66-1.168.205-.574.205-1.066.144-1.168-.062-.102-.226-.165-.474-.29z"/>
+  </svg>
+);
+
+// Add WhatsApp to social links
+const socialLinksWithWhatsApp = [
+  ...socialLinks,
+  {
+    icon: WhatsAppIcon,
+    label: "WhatsApp",
+    href: "https://wa.me/254703343652", // Your WhatsApp number with country code
+    color: "bg-green-500 hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700",
+    iconColor: "text-white",
+  },
+];
+
 interface ToastMessage {
   id: number;
   message: string;
@@ -156,8 +181,6 @@ const Contact = () => {
   
   // CV file path
   const cvFilePath = "/daniel-mutahi-cv.pdf";
-  
- 
   
   const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkqlnwq";
   
@@ -193,6 +216,14 @@ const Contact = () => {
     }
   };
 
+  // Handle WhatsApp click
+  const handleWhatsAppClick = () => {
+    const phoneNumber = "254703343652"; // Your WhatsApp number
+    const message = encodeURIComponent("Hi Daniel, I saw your portfolio and would like to connect!");
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    showToast("Opening WhatsApp...", 'info');
+  };
+
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -226,7 +257,7 @@ const Contact = () => {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
-          _replyto: formData.email, // This ensures replies go to the sender
+          _replyto: formData.email,
           _subject: `Portfolio Contact: ${formData.subject}`,
         })
       });
@@ -280,7 +311,6 @@ const Contact = () => {
       <div className="container mx-auto px-4 sm:px-6">
         {/* Header - Made smaller for mobile */}
         <div className="text-center mb-10 md:mb-14">
-          
           <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3">
             Get In Touch
           </h2>
@@ -340,6 +370,30 @@ const Contact = () => {
               </div>
             </div>
 
+            {/* WhatsApp Quick Connect Button */}
+            <Card className="shadow-lg border-green-500/30 bg-gradient-to-br from-green-500/5 to-green-500/10">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-full bg-green-500">
+                      <WhatsAppIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">Quick WhatsApp Connect</h4>
+                      <p className="text-xs text-muted-foreground">Get instant response</p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleWhatsAppClick}
+                    className="bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-2 h-auto"
+                  >
+                    <MessageCircle className="w-3 h-3 mr-1.5" />
+                    Chat Now
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Social Links - COMPACT VERSION */}
             <div>
               <h3 className="text-lg md:text-xl font-bold text-foreground mb-3">
@@ -347,7 +401,7 @@ const Contact = () => {
               </h3>
               
               <div className="flex flex-wrap gap-2 md:gap-3">
-                {socialLinks.map((social, index) => (
+                {socialLinksWithWhatsApp.map((social, index) => (
                   <a
                     key={index}
                     href={social.href}
@@ -419,7 +473,7 @@ const Contact = () => {
                 <div>
                   <p className="text-sm font-medium text-foreground">Quick Response</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Respond within 24 hours
+                    Respond within 24 hours (faster on WhatsApp)
                   </p>
                 </div>
               </div>
@@ -566,7 +620,11 @@ const Contact = () => {
                 <MessageCircle className="w-4 h-4 text-sky-500" />
                 <p className="text-xs font-medium text-foreground">Best Ways to Reach Me</p>
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="grid grid-cols-3 gap-1.5">
+                <div className="text-center p-1.5 rounded-md bg-green-500/10">
+                  <p className="text-[10px] font-semibold text-green-600">Instant</p>
+                  <p className="text-[9px] text-muted-foreground">WhatsApp</p>
+                </div>
                 <div className="text-center p-1.5 rounded-md bg-sky-500/10">
                   <p className="text-[10px] font-semibold text-sky-600">Quick</p>
                   <p className="text-[9px] text-muted-foreground">Telegram</p>

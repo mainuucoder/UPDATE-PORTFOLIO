@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Github, ExternalLink, Filter, Sparkles, Brain, Database } from "lucide-react";
+import { Github, ExternalLink, Filter, Sparkles, Brain, Database, Globe, Shield, Recycle, Heart, LineChart, Cloud, Code, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Import your existing images
@@ -9,8 +9,12 @@ import profileImage from "@/assets/profileImage.jpg";
 import smart_waste from "@/assets/smart_waste.png";
 import AIPoweredSoil from "@/assets/AIPoweredSoil.png";
 import AIforSDG3rd from "@/assets/AIforSDG3rd.png";
-import Safeguard  from "@/assets/Safeguard.png";
+import Safeguard from "@/assets/Safeguard.png";
 import NexusSolutions from "@/assets/NexusSolutions.png";
+import alihsan from "@/assets/alihsan.png";
+// import ecovision from "@/assets/ecovision.jpg";
+// import devcollab from "@/assets/devcollab.jpg";
+// import finwise from "@/assets/finwise.jpg";
 
 interface Project {
   id: number;
@@ -50,59 +54,103 @@ const allProjects: Project[] = [
     liveUrl: "https://smart-waste-management-system-six.vercel.app",
     category: "Full Stack",
     date: "2025",
-    featured: false,
-    icon: <Sparkles className="w-4 h-4" />
+    featured: true,
+    icon: <Recycle className="w-4 h-4" />
   },
   {
     id: 3,
-    title: "Safeguard Africa.End GBV",
+    title: "Safeguard Africa - End Digital Violence Against Women & Girls",
     description: "A comprehensive ecosystem powered by AI to prevent, detect, and respond to digital violence targeting women and girls across Africa.",
     image: Safeguard,
     technologies: ["React", "D3.js", "Python", "FastAPI", "PostgreSQL"],
     githubUrl: "https://github.com/mainuucoder/GBV-HACKTHON.git",
     liveUrl: "https://gbv-hackthon.vercel.app/",
-    category: "Full Stack & AI",
+    category: "Full Stack",
     date: "2025",
-    icon: <Sparkles className="w-4 h-4" />,
+    icon: <Shield className="w-4 h-4" />,
     featured: true
   },
   {
     id: 4,
     title: "AI for SDG 3: Predicting Disease Outbreak Risk",
-    description: "Using Unsupervised Learning (K-Means & DBSCAN) to identify high-risk disease outbreak regions. Using Machine Learning and Real-Time Data",
+    description: "Using Unsupervised Learning (K-Means & DBSCAN) to identify high-risk disease outbreak regions with machine learning and real-time data.",
     image: AIforSDG3rd,
-    technologies: ["Python", "OpenAI API", "React", "Firebase", "WebRTC"],
+    technologies: ["Python", "Scikit-learn", "Streamlit", "Pandas", "NumPy"],
     githubUrl: "https://github.com/mainuucoder/machine-learning-model-.git",
     liveUrl: "https://machine-driven-model.streamlit.app/",
     category: "AI/ML",
     date: "2024",
-    featured: true
+    featured: true,
+    icon: <Heart className="w-4 h-4" />
   },
   {
     id: 5,
-    title: "Nexus-Solutions",
-    description: "Transform Your Business with Innovative Solutions,helping businesses grow with cutting-edge technology, strategic planning, and creative solutions tailored to your specific needs",
+    title: "Nexus-Solutions - Business Innovation Platform",
+    description: "Transform your business with innovative solutions, helping businesses grow with cutting-edge technology and strategic planning.",
     image: NexusSolutions,
-    technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Chart.js"],
+    technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Tailwind CSS"],
     githubUrl: "https://github.com/mainuucoder/plp-webtechnologies-classroom-july2025-july-2025-final-project-and-deployment-Final-Project-and-Depl.git",
     liveUrl: "https://nexus-nine-alpha.vercel.app/",
     category: "Full Stack",
-    date: "2024"
+    date: "2024",
+    featured: false,
+    icon: <Globe className="w-4 h-4" />
   },
   {
     id: 6,
-    title: "Climate Change Data Visualization",
-    description: "Transform Your Business with Innovative Solutions",
-    image: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80",
-    technologies: ["D3.js", "Python", "Flask", "Pandas", "Mapbox"],
-    githubUrl: "https://github.com/mainuucoder/climate-visualization",
-    liveUrl: "https://climate-change-visualization.vercel.app",
+    title: "Al-Ihsan Schools Township",
+    description: "A comprehensive digital platform for Al-Ihsan Schools to streamline student management, academic tracking, parent communication, and administrative workflows with real-time synchronization.",
+    image: alihsan,
+    technologies: ["React Native", "Node.js","TypeScript","Tailwind CSS"],
+    githubUrl: "https://github.com/mainuucoder/al-ihsan-schools.git",
+    liveUrl: "https://al-ihsan-schools.vercel.app/",
     category: "Full Stack",
-    date: "2025"
-  }
+    date: "2026",
+    featured: true,
+    icon: <Heart className="w-4 h-4" />
+  },
+  // {
+  //   id: 7,
+  //   title: "EcoVision - Carbon Footprint Tracker",
+  //   description: "Track and analyze your carbon footprint with personalized recommendations to reduce environmental impact through daily activities and choices.",
+  //   image: ecovision,
+  //   technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Chart.js"],
+  //   githubUrl: "https://github.com/mainuucoder/ecovision.git",
+  //   liveUrl: "https://ecovision-app.vercel.app",
+  //   category: "AI/ML",
+  //   date: "2024",
+  //   featured: true,
+  //   icon: <Cloud className="w-4 h-4" />
+  // },
+  // {
+  //   id: 8,
+  //   title: "DevCollab - Remote Developer Collaboration Hub",
+  //   description: "A virtual workspace for developers to pair program, share code in real-time, and conduct technical interviews with integrated video chat.",
+  //   image: devcollab,
+  //   technologies: ["WebRTC", "React", "Express", "Redis", "Docker"],
+  //   githubUrl: "https://github.com/mainuucoder/devcollab.git",
+  //   liveUrl: "https://devcollab.vercel.app",
+  //   category: "Full Stack",
+  //   date: "2024",
+  //   featured: true,
+  //   icon: <Users className="w-4 h-4" />
+  // },
+  // {
+  //   id: 9,
+  //   title: "FinWise - Personal Finance Advisor",
+  //   description: "AI-powered financial planning tool that analyzes spending patterns, provides investment insights, and helps users achieve their financial goals.",
+  //   image: finwise,
+  //   technologies: ["Python", "Django", "React", "TensorFlow.js", "Chart.js"],
+  //   githubUrl: "https://github.com/mainuucoder/finwise.git",
+  //   liveUrl: "https://finwise-demo.vercel.app",
+  //   category: "AI/ML",
+  //   date: "2023",
+  //   featured: false,
+  //   icon: <LineChart className="w-4 h-4" />
+  // }
 ];
 
-const categories = ["All", "AI/ML", "Full Stack", "Data Visualization"];
+const categories = ["All", "AI/ML", "Full Stack"];
 
 const ProjectFilter = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -439,9 +487,8 @@ const ProjectFilter = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary via-accent to-secondary mx-auto rounded-full mb-4" />
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto px-4">
-            A curated selection of my best work across different technologies and domains
+            A curated selection of {allProjects.length} innovative projects across AI/ML and Full Stack development
           </p>
-         
         </div>
 
         {/* Filter Buttons */}
@@ -515,6 +562,9 @@ const ProjectFilter = () => {
                   alt={project.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://via.placeholder.com/600x400?text=Project+Image";
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                 
@@ -629,7 +679,7 @@ const ProjectFilter = () => {
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-500">
-                2024-2025
+                2023-2026
               </div>
               <div className="text-sm text-muted-foreground">Timeline</div>
             </div>
@@ -638,7 +688,7 @@ const ProjectFilter = () => {
       </div>
 
       {/* Add CSS for ultra smooth animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes ultraSmoothHorizontal {
           0% {
             transform: translateX(-100%) translateY(-50%);
